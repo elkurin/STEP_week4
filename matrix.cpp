@@ -16,8 +16,16 @@
 #include <string>
 #include <unordered_map>
 #include <iomanip>
+#include <sys/time.h>
 
 using namespace std;
+
+double gettime(void)
+{
+	struct timeval t;
+	gettimeofday(&t, NULL);
+	return (double)t.tv_sec + (double)t.tv_usec * 1e-6;
+}
 
 void printmat(vector<vector<double>> matrix)
 {
@@ -64,7 +72,6 @@ vector<vector<double>> mult(vector<vector<double>> a, vector<vector<double>> b)
 				b_clean[i].push_back(b[i][j]);
 				index[i].push_back(j);
 			}
-			// b_clean[i].push_back(b[i][j]);
 		}
 	}
 	for (int i = 0; i < (int)a.size(); i++) {
@@ -141,6 +148,8 @@ int main(void)
 		go[x].push_back(y);
 	}
 
+	double tstart = gettime();
+
 	vector<vector<double>> matrix(n, vector<double>(n, 0));
 	for (int i = 0; i < n; i++) {
 		if (!go[member[i]].size()) {
@@ -160,6 +169,8 @@ int main(void)
 	vector<double> rank(n, 100);
 	rank = mult(matrix, rank);
 
+	double tend = gettime();
+
 	double sum = 0;
 	for (int i = 0; i < n; i++) {
 		cout << rank[i] << " ";
@@ -168,6 +179,7 @@ int main(void)
 	cout << endl;
 
 	cout << sum << " " << 100 * n << endl;
+	cout << tend - tstart << endl;
 
 	return 0;
 }
